@@ -1,0 +1,124 @@
+#include <iostream>
+#include <fstream>  // Бібліотека для роботи з файлами 
+
+using namespace std;
+
+void checkValidInput()
+{
+    if(cin.fail())
+    {
+        throw "Eror";
+    }
+}
+
+void checkValidParams(int n)
+{
+    if (n < 4) 
+    {
+        throw "Correct data";
+    }
+}
+
+int foo(double x, int n)
+{
+    int y;
+    y = 1;
+    for (int i = 1; i <= n; i++)
+    {
+        int p = 1;
+        for (int j = 0; j <= n - 1; j++)
+        {
+            p *= (x - i - j);
+        }
+        y *= p;
+    }
+    return y;
+}
+int calculate (double x, int n) 
+{
+    int y;
+    y = 0;
+    for (int i = 0; i <= n; i++)
+    {
+        y += (x - i) * (x - i);
+    }
+    return y;
+}
+
+
+int main()
+{
+    setlocale(LC_ALL, "UKRAINIAN");
+
+    int n;
+    double a, b, h, y;
+
+    // Відкриття файлу для запису результатів
+    ofstream outputFile("final_result.txt");
+    if (!outputFile.is_open()) {
+        cout << "Помилка відкриття файлу" << endl;
+        return -1;
+    }
+
+    
+    cout << "Введiть значення в дiапазонi вiд а до b:" << endl;
+    cin >> a >> b;
+    cout << "Крок h:" << endl;
+    cin >> h;
+    cout << "Введiть значення n:" << endl;
+    cin >> n;
+
+    double x = a;
+    if (n <= 1 || a > b || h < 0)
+    {
+        cout << "Помилка!";
+        return 1;
+    }
+    while (x <= b)
+    {
+        if (x <= 0)
+        {
+            y = 0;
+            for (int i = 0; i <= n; i++)
+            {
+                y += (x - i) * (x - i);
+            }
+            cout << "x = " << x << " y = " << y << endl;
+            x += h;
+        }
+        else
+        {
+            y = 1;
+            for (int i = 1; i <= n; i++)
+            {
+                int p = 1;
+                for (int j = 0; j <= n - 1; j++)
+                {
+                    p *= (x - i - j);
+                }
+                y *= p;
+            }
+            cout << "x = " << x << " y = " << y << endl;
+            x += h;
+        }
+    } 
+    try 
+    {
+        for (; a <= b; a += h) {
+            double result = calculate(a, n);
+            cout << a << "\t" << result << endl;
+
+            // Запись результатів у файл
+            outputFile << a << "\t" << result << endl;
+        }
+        // Закриття файлу після запису
+        outputFile.close();
+    }
+    catch (const char* ex) {
+        cout << ex << endl;
+        // Закриття файлу у разі помилки
+        outputFile.close(); 
+        return -1;
+    }
+    return 0;
+}
